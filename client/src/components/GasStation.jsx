@@ -8,7 +8,7 @@ function GasStation({ gasStation }) {
                     <h4 className="font-bold text-2xl">Nearest Gas Station</h4>
                 </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-1">
                 <p>Name: {!gasStation?.name && "-"}</p>
                 <p>Location: {!gasStation?.vicinity && "-"}</p>
             </CardContent>
