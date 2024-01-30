@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "../shadcn/components/ui/card";
 
-function GasStation({ gasStation }) {
+function NearestGasStation({ gasStation }) {
     return (
         <Card>
             <CardHeader>
@@ -9,6 +9,7 @@ function GasStation({ gasStation }) {
                 </div>
             </CardHeader>
             <CardContent className="flex-1">
+                {gasStation}
                 <p>Name: {!gasStation?.name && "-"}</p>
                 <p>Location: {!gasStation?.vicinity && "-"}</p>
             </CardContent>
@@ -16,4 +17,4 @@ function GasStation({ gasStation }) {
     )
   }
   
-  export default GasStation
+  export default NearestGasStation

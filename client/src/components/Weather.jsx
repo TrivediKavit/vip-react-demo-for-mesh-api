@@ -1,6 +1,21 @@
 import { useOpenWeatherMap } from "src/services/useGraphQLRequests";
 import { Card, CardContent, CardHeader } from "../shadcn/components/ui/card";
 
+function kmhToMph(kmh) {
+    const mph = kmh * 0.621371;
+    return parseFloat(mph.toFixed(2));
+}
+  
+function metersToMiles(meters) {
+    const miles = meters * 0.000621371;
+    return parseFloat(miles.toFixed(2));
+}
+
+function kelvinToFahrenheit(kelvin) {
+    const fahrenheit = ((kelvin - 273.15) * 9/5) + 32;
+    return parseFloat(fahrenheit.toFixed(2));
+}
+
 function Weather({ location }) {
 
     const { isPending, isError, data, error } = useOpenWeatherMap(location)
@@ -15,10 +30,41 @@ function Weather({ location }) {
                 </div>
             </CardHeader>
             <CardContent className="flex-1">
-                <p><span className="text-gray-700 text-sm font-bold">Icon:</span> { isPending ? <span className="inline-block align-middle animate-pulse h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48"></span> : data?.FetchWeatherAtLocation.weather[0].icon }</p>
-                <p><span className="text-gray-700 text-sm font-bold">Main:</span> { isPending ? <span className="inline-block align-middle animate-pulse h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48"></span> : data?.FetchWeatherAtLocation.weather[0].main }</p>
-                <p><span className="text-gray-700 text-sm font-bold">Description:</span> { isPending ? <span className="inline-block align-middle animate-pulse h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48"></span> : data?.FetchWeatherAtLocation.weather[0].description }</p>
-                <p><span className="text-gray-700 text-sm font-bold">Temperature:</span> { isPending ? <span className="inline-block align-middle animate-pulse h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48"></span> : data?.FetchWeatherAtLocation.main.temp }</p>
+                <div className="flex items-center justify-center">
+                    <div className="flex flex-col bg-white">
+						<div className="text-6xl self-center inline-flex items-center justify-center rounded-lg text-gray-700 h-24 w-24">
+                            { 
+                                isPending 
+                                ? <span className="inline-block align-middle animate-pulse h-24 bg-gray-200 rounded-full dark:bg-gray-700 w-48"></span> 
+                                : <img src={`https://openweathermap.org/img/wn/${data?.FetchWeatherAtLocation.weather[0].icon}@2x.png`} />
+                            }
+						</div>
+                        <div className="font-bold text-center text-2xl">{ isPending ? <span className="inline-block align-middle animate-pulse h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-32"></span> : data?.FetchWeatherAtLocation.weather[0].main }</div>
+						<div className="flex flex-row items-center justify-center mt-6">
+							<div className="font-medium text-6xl text-indigo-400">
+                                { 
+                                    isPending 
+                                    ? <span className="inline-block align-middle animate-pulse h-16 bg-gray-200 dark:bg-gray-700 w-64"></span> 
+                                    : kelvinToFahrenheit(data?.FetchWeatherAtLocation.main.temp) + ' °F' 
+                                }
+                            </div>
+						</div>
+						<div className="flex flex-row justify-between mt-6">
+							<div className="flex flex-col items-center">
+								<div className="font-medium text-sm">Wind</div>
+								<div className="text-sm text-gray-500">{ isPending ? <span className="inline-block align-middle animate-pulse h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-12"></span> : kmhToMph(data?.FetchWeatherAtLocation.wind.speed) + ' mph' }</div>
+							</div>
+							<div className="flex flex-col items-center ml-4">
+								<div className="font-medium text-sm">Humidity</div>
+								<div className="text-sm text-gray-500">{ isPending ? <span className="inline-block align-middle animate-pulse h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-12"></span> : data?.FetchWeatherAtLocation.main.humidity + '%' }</div>
+							</div>
+							<div className="flex flex-col items-center ml-4">
+								<div className="font-medium text-sm">Visibility</div>
+								<div className="text-sm text-gray-500">{ isPending ? <span className="inline-block align-middle animate-pulse h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-12"></span> : metersToMiles(data?.FetchWeatherAtLocation.visibility) + ' miles' }</div>
+							</div>
+						</div>
+					</div>
+                </div>
             </CardContent>
         </Card>
     )

@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react'
+import './App.css'
 
-import GasStation from './components/GasStation'
+// import NearestGasStation from './components/NearestGasStation'
 import InputField from './components/InputField'
 import Weather from './components/Weather'
 import GeoLocationViaIP from './components/GeoLocationViaIP'
-
-import './App.css'
 import Coordinates from './components/Coordinates'
+import GoogleMapComponent from './components/GoogleMap'
 
 function App() {
 
     const [ipAddress, setIpAddress] = useState(null);
-    const [currentLocation, setCurrentLocation] = useState("New York")
+    const [currentLocation, setCurrentLocation] = useState(null)
+    const [originLocation, setOriginLocation] = useState("New York")
     const [destinationLocation, setDestinationLocation] = useState("Washington DC")
-    const [latitude, setLatitude] = useState(null)
-    const [longitude, setLongitude] = useState(null)
-    const [nextGasStation, setNextGasStation] = useState(null)
+    // const [gasStation, setGasStation] = useState(null)
 
     const fetchIpAddressData = async () => {
         const res = await fetch("https://api.ipify.org/?format=json")
@@ -23,19 +22,45 @@ function App() {
                 .then(data => setIpAddress(data.ip))
     };
 
+    // const fetchNearestGasStationFromGooglePlacesAPI = async () => {
+    //     const response = await fetch(`/nearest-gas-station?lat=${currentLocation?.lat}&lng=${currentLocation?.lng}`);
+    //     const data = await response.json();
+    //     setGasStation(data.results[0]);
+    // };
+
+    // useEffect(() => {
+    //     if(!currentLocation) return
+    //     const fetchNearestGasStation = async () => {
+    //         try {
+    //             const response = await fetchNearestGasStationFromGooglePlacesAPI();
+    //             setGasStation(response.results[0]);
+    //         } catch (error) {
+    //             console.error('Error fetching nearest gas station:', error);
+    //         }
+    //     };
+    
+    //     fetchNearestGasStation();
+    // }, [currentLocation]);
+
     useEffect(() => {
         fetchIpAddressData()
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((position) => {
-            setLatitude(position.coords.latitude);
-            setLongitude(position.coords.longitude);
-          }, (error) => {
-            console.error('Error getting current location:', error);
-          });
+            navigator.geolocation.getCurrentPosition((position) => {
+                // setCurrentLocation({
+                //     "lat": position.coords.latitude,
+                //     "lng": position.coords.longitude
+                // })
+                setCurrentLocation({
+                    "lat": 40.00269578866509, 
+                    "lng": -75.17282883981758
+                })
+            }, (error) => {
+                console.error('Error getting current location:', error);
+            });
         } else {
-          console.error('Geolocation is not supported by this browser.');
+            console.error('Geolocation is not supported by this browser.');
         }
-      }, []);
+    }, []);
 
     return (
         <div className="container mx-auto px-4 py-6">
@@ -45,10 +70,10 @@ function App() {
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <InputField 
-                        label="Current Location" 
+                        label="Origin Location" 
                         type="text" 
-                        value={currentLocation}
-                        handleChange={(event) => setCurrentLocation(event.target.value)}
+                        value={originLocation}
+                        handleChange={(event) => setOriginLocation(event.target.value)}
                     />
                 </div>
                 <div>
@@ -60,23 +85,33 @@ function App() {
                     />
                 </div>
             </div>
+
             <div className="grid grid-cols-3 gap-4 mb-4">
-                <div className="flex items-stretch">
-                    <Coordinates latitude={latitude} longitude={longitude} />
+                {/* <div className="flex items-stretch">
+                    <NearestGasStation gasStation={gasStation} />
+                </div> */}
+                <div className="flex items-stretch col-start-1 col-end-4">
+                    <GoogleMapComponent 
+                        currentLocation={currentLocation}
+                        originLocation={originLocation} 
+                        destinationLocation={destinationLocation}
+                    />
                 </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="flex items-stretch">
-                    <GeoLocationViaIP ipAddress={ipAddress} />
+                    <Weather location={originLocation} />
                 </div>
                 <div className="flex items-stretch">
                     <Weather location={destinationLocation} />
                 </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-stretch">
-                    <GasStation gasStation={nextGasStation} />
+                    <Coordinates latitude={currentLocation?.lat} longitude={currentLocation?.lng} />
                 </div>
-                <div className="flex items-stretch col-start-2 col-end-3">
-                    [MAP HERE]
+                <div className="flex item-stretch">
+                    <GeoLocationViaIP ipAddress={ipAddress} />
                 </div>
             </div>
         </div>

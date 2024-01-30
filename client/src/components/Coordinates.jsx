@@ -6,7 +6,7 @@ function Coordinates({ latitude, longitude }) {
         <Card>
             <CardHeader>
                 <div className="text-center">
-                    <h4 className="font-bold text-2xl">Coordinates</h4>
+                    <h4 className="font-bold text-2xl">Current Location</h4>
                 </div>
             </CardHeader>
             <CardContent className="flex-1">
