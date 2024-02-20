@@ -46,10 +46,14 @@ function App() {
         fetchIpAddressData()
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
+                // ==============================================
+                // Set Current Location as dictated by the Client
                 // setCurrentLocation({
                 //     "lat": position.coords.latitude,
                 //     "lng": position.coords.longitude
                 // })
+                // ====================================
+                // Set Current Location to Philadelphia
                 setCurrentLocation({
                     "lat": 40.00269578866509, 
                     "lng": -75.17282883981758
