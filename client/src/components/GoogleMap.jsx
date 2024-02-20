@@ -14,7 +14,10 @@ const GoogleMapComponent = ({ currentLocation, originLocation, destinationLocati
     const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY
 
     useEffect(() => {
-        setRefreshMap(false)
+        setRefreshMap(true)
+        setTimeout(function(){
+            setRefreshMap(false)
+        }, 250)
     }, [currentLocation, originLocation, destinationLocation])
 
     const handleDirectionServiceCallback = (result, status) => {
@@ -33,7 +36,7 @@ const GoogleMapComponent = ({ currentLocation, originLocation, destinationLocati
                 mapContainerStyle={mapContainerStyle}
                 center={currentLocation}
             >
-                {originLocation && destinationLocation && !refreshMap && (
+                {originLocation && destinationLocation && refreshMap && (
                     <DirectionsService
                         options={{
                             origin: originLocation,
